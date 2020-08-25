@@ -1,0 +1,4 @@
+CLIENT_ID=XXX
+CLIENT_SECRET=XXX
+REDIRECT_URI=http://127.0.0.1:5000/callback
+SECRET_KEY=XXX #Use output of python -c 'import os; print(os.urandom(16))'
