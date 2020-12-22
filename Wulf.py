@@ -34,7 +34,8 @@ RIGBY = 2
 
 BACKGROUND_COLOR = '#0f00ff'
 
-WINDOW_SIZE = '48x60+'#Todo make this dynamic
+WINDOW_SIZE = '100x100+'#Todo make this dynamic
+basewidth = 100
 
 #TODO: Cache this after application closes?, along with current animal
 lastClickX = 0
@@ -49,14 +50,17 @@ currentAnimal = 0
 
 nextAnimationNumber = 0
 
-animationSpeed = 50 #framechanges in miliseconds
+animationSpeed = 100 #framechanges in miliseconds
 
-animal_idle_num = 11
-animal_dance_num = 23
-
+#animal_idle_num = 11
+#animal_dance_num = 23
+animal_idle_num = 4
+animal_dance_num = 8
 #Add more file names here
-houndour_idle_filename = "ImageSource/Houndour.gif"
-houndour_bark_filename = "ImageSource/Houndour_Bark.gif"
+#houndour_idle_filename = "ImageSource/Houndour.gif"
+houndour_idle_filename = "ImageSource/Wulf_Idle.gif"
+#houndour_bark_filename = "ImageSource/Houndour_Bark.gif"
+houndour_bark_filename = "ImageSource/Wulf_Dance.gif"
 
 animationToPlay = IDLE_ANIMATION
 
@@ -312,8 +316,11 @@ def setup_animations(animal_chosen): #Add in more animations here
 
 #############################################################################################################
 def extract_image_data(file_name):
-	image_object = Image.open(str(impath)+file_name)
-	num_of_frames = image_object.n_frames
+	img = Image.open(str(impath)+file_name)
+	wpercent = (basewidth/float(img.size[0]))
+	hsize = int((float(img.size[1])*float(wpercent)))
+	#img = img.resize((basewidth,hsize), PIL.Image.LANCZOS)
+	num_of_frames = img.n_frames
 	temp_frames = [tk.PhotoImage(file=str(impath)+file_name,format = 'gif -index %i' %(i)) for i in range(num_of_frames)]
 	return num_of_frames, temp_frames
 #############################################################################################################
@@ -368,12 +375,14 @@ root = tk.Tk()
 root.update_idletasks()
 root.attributes('-fullscreen', True)
 root.state('iconic')
-WIDTH_OFFSET = root.winfo_screenwidth() - 100
-HEIGHT_OFFSET = root.winfo_screenheight() - 100
+WIDTH_OFFSET = root.winfo_screenwidth() - 150
+HEIGHT_OFFSET = root.winfo_screenheight() - 150
 root.destroy()
 
 window = tk.Tk()#This is where the window actually is written
-button = tk.Button(window,bd=0,bg="white",highlightcolor=BACKGROUND_COLOR,highlightthickness=0,relief='flat',command=start_or_pause_music, compound='bottom')
+button = tk.Button(window,bd=0,bg="white",highlightcolor="#ffffff",highlightthickness=0,relief='flat',command=start_or_pause_music, compound='bottom', activebackground="white")
+button.grid()
+button.config(bg="white")
 button.pack()
 
 #Making the rightclick menu
@@ -383,27 +392,27 @@ aMenu = tk.Menu(window, tearoff=0)
 aMenu.add_command(label='Next Track', command=next_track)
 aMenu.add_command(label='Last Track', command=previous_track)
 aMenu.add_command(label='Toggle Window Priority', command=toggle_window_priority)
-aMenu.add_command(label='Change to Wulf', command=partial(setup_animations, WULF))
-aMenu.add_command(label='Change to Rao', command=partial(setup_animations, RAO))
-aMenu.add_command(label='Change to Rigby', command=partial(setup_animations, RIGBY))
+#aMenu.add_command(label='Change to Wulf', command=partial(setup_animations, WULF))
+#aMenu.add_command(label='Change to Rao', command=partial(setup_animations, RAO))
+#aMenu.add_command(label='Change to Rigby', command=partial(setup_animations, RIGBY))
 aMenu.add_command(label='Exit', command=exit_wulf)
 
 #call buddy's action gif
-houndour_idle = [tk.PhotoImage(file=str(impath)+houndour_idle_filename,format = 'gif -index %i' %(i)) for i in range(11)]
-houndour_bark = [tk.PhotoImage(file=str(impath)+houndour_bark_filename,format = 'gif -index %i' %(i)) for i in range(23)]
+houndour_idle = [tk.PhotoImage(file=str(impath)+houndour_idle_filename,format = 'gif -index %i' %(i)) for i in range(animal_idle_num)]
+houndour_bark = [tk.PhotoImage(file=str(impath)+houndour_bark_filename,format = 'gif -index %i' %(i)) for i in range(animal_dance_num)]
 
 animal_from_file = read_file()
 
 setup_animations(animal_from_file)
 
 #window configuration
-window.config(highlightbackground=BACKGROUND_COLOR)#This should be even more dynamic
-label = tk.Label(window,bd=0,bg=BACKGROUND_COLOR) #This lets the animation be movable and show
+#window.config(highlightbackground=BACKGROUND_COLOR)#This should be even more dynamic
+label = tk.Label(window,bd=0,bg="#ffffff") #This lets the animation be movable and show
 
 window.overrideredirect(True)
 window.geometry(WINDOW_SIZE+str(WIDTH_OFFSET)+'+'+str(HEIGHT_OFFSET)) #Actually sets up the thing on location
 window.wait_visibility(window)
-window.wm_attributes('-transparentcolor',BACKGROUND_COLOR)
+window.wm_attributes('-transparentcolor','#ffffff')
 window.bind('<Button-1>', save_last_click_pos)
 window.bind('<B1-Motion>', dragging)
 window.attributes("-topmost",True)
