@@ -421,4 +421,6 @@ label.pack(expand = True)
 #loop the program
 window.after(1,update,currentAnimationFrame,currentAnimation,animationToPlay,WIDTH_OFFSET)
 window.after(2000,spotify_update)
+window.title("Wulf")
+window.iconbitmap(default=(str(impath) + 'ImageSource/WulfIcon.ico'))
 window.mainloop()
